@@ -3,10 +3,10 @@ import Box from "@mui/material/Box";
 import { useEthers, useChainMeta, shortenIfAddress } from "@usedapp/core";
 
 export default function Account() {
-  const { active, account, chainId, activateBrowserWallet } = useEthers();
+  const { account, chainId, activateBrowserWallet } = useEthers();
   const chainMeta = useChainMeta(chainId ?? 1);
 
-  if (active)
+  if (account)
     return (
       <>
         <span>ChainName: {chainMeta.chainName}</span>
