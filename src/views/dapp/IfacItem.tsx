@@ -95,7 +95,6 @@ const IfacItem: React.FunctionComponent<{
             sx={{ width: "200px" }}
             variant="contained"
             onClick={handleRead}
-            disabled={!signAccount}
           >
             Read
           </Button>

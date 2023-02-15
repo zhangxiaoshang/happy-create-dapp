@@ -19,27 +19,4 @@ export default function Account() {
       Connect Wallet
     </Button>
   );
-
-  return (
-    <Box
-      sx={{
-        flexGrow: 1,
-        display: { xs: "none", md: "flex" },
-        columnGap: 2,
-        justifyContent: "flex-end",
-        mr: 2,
-      }}
-    >
-      {active ? (
-        <>
-          <span>ChainName: {chainMeta.chainName}</span>
-          <span>Account: {shortenIfAddress(account)}</span>
-        </>
-      ) : (
-        <Button variant="contained" onClick={activateBrowserWallet}>
-          Connect Wallet
-        </Button>
-      )}
-    </Box>
-  );
 }
