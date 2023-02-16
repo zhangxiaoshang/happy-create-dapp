@@ -4,20 +4,22 @@ import Stack from '@mui/material/Stack';
 import InputLabel from '@mui/material/InputLabel';
 import MenuItem from '@mui/material/MenuItem';
 import FormControl from '@mui/material/FormControl';
-import Select from '@mui/material/Select';
+import Select, { SelectChangeEvent } from '@mui/material/Select';
 import TextField from '@mui/material/TextField';
 import Button from '@mui/material/Button';
 import CardContent from '@mui/material/CardContent';
 
 import { utils } from 'ethers';
+import { shortenIfAddress } from '@usedapp/core';
 
-import { addDapp } from '@/database/dapp';
+import { addDapp, getDapp, IDapp } from '@/database/dapp';
 import { networks } from '@/pages/_app';
 
 export default function Create() {
   const route = useRouter();
-  const [dapp, setDapp] = useState({
+  const [dapp, setDapp] = useState<IDapp>({
     chainId: 1,
+    chainName: '',
     name: '',
     address: '',
     abi: '',
@@ -26,15 +28,17 @@ export default function Create() {
 
   const addressError = !!dapp.address && !utils.isAddress(dapp.address);
 
+  const handleNetworkChanged = (e: SelectChangeEvent<number>) => {
+    const chainId = Number(e.target.value);
+    const chain = networks.find((c) => c.chainId === chainId);
+
+    setDapp({ ...dapp, chainId, chainName: chain?.chainName ?? shortenIfAddress(dapp.address) });
+  };
+
   const handleCreate = async () => {
     await addDapp(dapp);
 
-    route.push({
-      pathname: '/dapp',
-      query: {
-        address: dapp.address,
-      },
-    });
+    route.push({ pathname: '/dapp', query: { address: dapp.address } });
   };
 
   return (
@@ -42,7 +46,7 @@ export default function Create() {
       <Stack spacing={2}>
         <FormControl fullWidth required>
           <InputLabel>Chain</InputLabel>
-          <Select value={dapp.chainId} label="Chain" onChange={(e) => setDapp({ ...dapp, chainId: Number(e.target.value) })}>
+          <Select defaultValue={dapp.chainId} label="Chain" onChange={handleNetworkChanged}>
             {networks.map((network) => (
               <MenuItem key={network.chainId} value={network.chainId}>
                 {network.chainName}

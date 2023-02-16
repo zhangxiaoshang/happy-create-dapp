@@ -17,5 +17,5 @@ pnpm dev
 - [x] 支持 hardhat 网络
 - [] 合约调用支持 overide 参数
 - [x] 内置 contract 方便开发调试
-- [] 移除/全部移除
-- [] create_at/update_at
+- [x] 移除
+- [x] create_at/update_at

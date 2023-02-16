@@ -18,7 +18,7 @@ import Account from '@/components/account';
 
 import { useEthers, useChainMeta, shortenIfAddress } from '@usedapp/core';
 
-const pages = ['Dapps', 'Create'];
+const pages = ['Create', 'Dapps'];
 const settings = ['Logout'];
 
 function ResponsiveAppBar() {
@@ -155,10 +155,10 @@ function ResponsiveAppBar() {
             <Account></Account>
           </Box>
 
-          <Box sx={{ flexGrow: 0 }}>
+          {/* <Box sx={{ flexGrow: 0 }}>
             <Tooltip title="Open settings">
               <IconButton onClick={handleOpenUserMenu} sx={{ p: 0 }}>
-                <Avatar alt="Remy Sharp" src="/static/images/avatar/2.jpg" />
+                <Avatar alt="Dapp Logo" />
               </IconButton>
             </Tooltip>
             <Menu
@@ -183,7 +183,7 @@ function ResponsiveAppBar() {
                 </MenuItem>
               ))}
             </Menu>
-          </Box>
+          </Box> */}
         </Toolbar>
       </Container>
     </AppBar>
