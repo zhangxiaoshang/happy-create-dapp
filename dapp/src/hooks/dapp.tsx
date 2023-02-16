@@ -1,5 +1,5 @@
-import { useEffect, useState } from "react";
-import { getDapp } from "@/database/dapp";
+import { useEffect, useState } from 'react';
+import { getDapp } from '@/database/dapp';
 
 export function useDapp(address: string | undefined) {
   const [dapp, setDapp] = useState<any>();
@@ -17,9 +17,9 @@ export function useDapp(address: string | undefined) {
 }
 
 export function useMethods(abi: string) {
-  const [methods, setMethods] = useState<{ read: string[]; write: string[] }>({
-    read: [],
-    write: [],
+  const [methods, setMethods] = useState<{ reads: any[]; writes: any[] }>({
+    reads: [],
+    writes: [],
   });
   useEffect(() => {
     if (!abi) return;
@@ -29,22 +29,22 @@ export function useMethods(abi: string) {
 
   const parseABI = (abi: string) => {
     try {
-      const read: string[] = [];
-      const write: string[] = [];
+      const reads: string[] = [];
+      const writes: string[] = [];
 
       for (const row of JSON.parse(abi)) {
-        if (row.type === "function") {
-          if (row.stateMutability === "view" && row.name) {
-            read.push(row.name);
+        if (row.type === 'function') {
+          if (row.stateMutability === 'view' && row.name) {
+            reads.push(row);
           }
 
-          if (row.stateMutability === "nonpayable" && row.name) {
-            write.push(row.name);
+          if (row.stateMutability === 'nonpayable' && row.name) {
+            writes.push(row);
           }
         }
       }
 
-      setMethods({ read, write });
+      setMethods({ reads, writes });
     } catch (error) {
       console.error(error);
     }
