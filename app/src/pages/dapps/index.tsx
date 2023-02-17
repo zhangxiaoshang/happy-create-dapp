@@ -1,3 +1,4 @@
+import Head from 'next/head';
 import { useEffect, useState } from 'react';
 import { useRouter } from 'next/router';
 
@@ -41,54 +42,60 @@ export default function Dashboard() {
   };
 
   return (
-    <TableContainer component={Paper}>
-      <Table>
-        <TableHead>
-          <TableRow>
-            <TableCell>Name</TableCell>
-            <TableCell>ChainId</TableCell>
-            <TableCell>Network</TableCell>
-            <TableCell>Address</TableCell>
-            <TableCell>Description</TableCell>
-            <TableCell>Create At</TableCell>
-            <TableCell>Update At</TableCell>
-            <TableCell align="right">Action</TableCell>
-          </TableRow>
-        </TableHead>
-        <TableBody>
-          {dapps.map((row) => (
-            <TableRow
-              key={row.address}
-              sx={{ '&:last-child td, &:last-child th': { border: 0 }, cursor: 'pointer' }}
-              hover
-              onClick={() =>
-                route.push({
-                  pathname: '/dapp',
-                  query: { address: row.address },
-                })
-              }
-            >
-              <TableCell>{row.name || row.address}</TableCell>
-              <TableCell>{row.chainId}</TableCell>
-              <TableCell>{row.chainName}</TableCell>
-              <TableCell>{row.address}</TableCell>
-              <TableCell>{row.description}</TableCell>
-              <TableCell>{row.createAt ? dayjs(row.createAt).format('YYYY-MM-DD HH:mm') : ''}</TableCell>
-              <TableCell>{row.updateAt ? dayjs(row.updateAt).format('YYYY-MM-DD HH:mm') : ''}</TableCell>
-              <TableCell align="right">
-                <Stack direction="row" spacing={2} justifyContent="flex-end">
-                  <Button size="small" variant="contained" endIcon={<SendIcon />} onClick={(e) => handlePlay(e, row.address)}>
-                    Play
-                  </Button>
-                  <Button size="small" variant="outlined" startIcon={<DeleteIcon />} onClick={(e) => handleDelete(e, row.address)}>
-                    Delete
-                  </Button>
-                </Stack>
-              </TableCell>
+    <>
+      <Head>
+        <title>DApps</title>
+      </Head>
+
+      <TableContainer component={Paper}>
+        <Table>
+          <TableHead>
+            <TableRow>
+              <TableCell>Name</TableCell>
+              <TableCell>ChainId</TableCell>
+              <TableCell>Network</TableCell>
+              <TableCell>Address</TableCell>
+              <TableCell>Description</TableCell>
+              <TableCell>Create At</TableCell>
+              <TableCell>Update At</TableCell>
+              <TableCell align="right">Action</TableCell>
             </TableRow>
-          ))}
-        </TableBody>
-      </Table>
-    </TableContainer>
+          </TableHead>
+          <TableBody>
+            {dapps.map((row) => (
+              <TableRow
+                key={row.address}
+                sx={{ cursor: 'pointer' }}
+                hover
+                onClick={() =>
+                  route.push({
+                    pathname: '/dapp',
+                    query: { address: row.address },
+                  })
+                }
+              >
+                <TableCell>{row.name || row.address}</TableCell>
+                <TableCell>{row.chainId}</TableCell>
+                <TableCell>{row.chainName}</TableCell>
+                <TableCell>{row.address}</TableCell>
+                <TableCell>{row.description}</TableCell>
+                <TableCell>{row.createAt ? dayjs(row.createAt).format('YYYY-MM-DD HH:mm') : ''}</TableCell>
+                <TableCell>{row.updateAt ? dayjs(row.updateAt).format('YYYY-MM-DD HH:mm') : ''}</TableCell>
+                <TableCell align="right">
+                  <Stack direction="row" spacing={2} justifyContent="flex-end">
+                    <Button size="small" variant="contained" endIcon={<SendIcon />} onClick={(e) => handlePlay(e, row.address)}>
+                      Play
+                    </Button>
+                    <Button size="small" variant="outlined" startIcon={<DeleteIcon />} onClick={(e) => handleDelete(e, row.address)}>
+                      Delete
+                    </Button>
+                  </Stack>
+                </TableCell>
+              </TableRow>
+            ))}
+          </TableBody>
+        </Table>
+      </TableContainer>
+    </>
   );
 }

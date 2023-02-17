@@ -1,15 +1,14 @@
-import Head from "next/head";
-import { useRouter } from "next/router";
-import Link from "next/link";
-import { Inter } from "@next/font/google";
-import styles from "@/styles/Home.module.css";
-import Button from "@mui/material/Button";
+import Head from 'next/head';
+import Image from 'next/image';
+import { Inter } from '@next/font/google';
+import styles from '@/styles/Home.module.css';
+import Typography from '@mui/material/Typography';
+import Link from 'next/link';
+import { networks } from '@/pages/_app';
 
-const inter = Inter({ subsets: ["latin"] });
+const inter = Inter({ subsets: ['latin'] });
 
 export default function Home() {
-  const router = useRouter();
-
   return (
     <>
       <Head>
@@ -19,13 +18,58 @@ export default function Home() {
         <link rel="icon" href="/favicon.ico" />
       </Head>
       <main className={styles.main}>
-        <h1 className={inter.className}>One mintue create a Dapp</h1>
+        <div className={styles.center}>
+          <Typography
+            variant="h1"
+            sx={{
+              mr: 2,
+              display: { xs: 'none', md: 'flex' },
+              fontFamily: 'monospace',
+              fontWeight: 700,
+              letterSpacing: '.3rem',
+              color: 'inherit',
+              textDecoration: 'none',
+            }}
+          >
+            Ladybug
+          </Typography>
+          <Typography
+            variant="subtitle1"
+            sx={{
+              mr: 2,
+              display: { xs: 'none', md: 'flex' },
+              // fontFamily: 'monospace',
+              fontSize: 32,
+              fontWeight: 700,
+              color: 'inherit',
+              textDecoration: 'none',
+            }}
+          >
+            A faster way to build dapps
+          </Typography>
+        </div>
 
-        <Link href="/create">
-          <Button variant="contained" size="large">
-            Get Start 🚀
-          </Button>
-        </Link>
+        <div className={styles.grid}>
+          <Link href="/create" className={styles.card} rel="noopener noreferrer">
+            <h2 className={inter.className}>⚡️ Instant</h2>
+            <p className={inter.className}>Build a dapp in one minute.</p>
+          </Link>
+
+          <Link href="/dapps" className={styles.card} rel="noopener noreferrer">
+            <h2 className={inter.className}>💻 Store</h2>
+            <p className={inter.className}>Data is stored locally</p>
+          </Link>
+
+          <Link href="/create" className={styles.card} rel="noopener noreferrer">
+            <h2 className={inter.className}>🔗 Network</h2>
+            <p className={inter.className}>Support {networks.map((c) => c.chainName).join(', ')}.</p>
+          </Link>
+
+          <Link href="/create" className={styles.card} target="_blank" rel="noopener noreferrer">
+            <h2 className={inter.className}>🦊 Desktop</h2>
+            <p className={inter.className}>Access your dapp on any device using your favorite ethereum wallet.</p>
+          </Link>
+        </div>
       </main>
     </>
   );
