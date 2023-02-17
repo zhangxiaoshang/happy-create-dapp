@@ -13,6 +13,7 @@ import Overrides from './Overrides';
 import OutputList from './OutputList';
 
 interface MethodItemProps {
+  disabled?: boolean;
   index: number;
   type: 'read' | 'write';
   name: string;
@@ -31,7 +32,7 @@ interface OverridesProps {
 }
 
 export function MethodItem(props: MethodItemProps) {
-  const { index, type, name, ifac, address, library, signAccount } = props;
+  const { disabled, index, type, name, ifac, address, library, signAccount } = props;
   const [args, setArgs] = useState<(string | number)[]>([]);
   const [overrides, setOverrides] = useState<OverridesProps>({});
   const [result, setResult] = useState<any>(); // call method result
@@ -67,7 +68,7 @@ export function MethodItem(props: MethodItemProps) {
   };
 
   return (
-    <Accordion onChange={handleChange} variant="outlined">
+    <Accordion onChange={handleChange} variant="outlined" disabled={disabled}>
       <AccordionSummary expandIcon={<ExpandMoreIcon />} aria-controls="panel1a-content">
         <Typography>
           {index + 1}. {name}
