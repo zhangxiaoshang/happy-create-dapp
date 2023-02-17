@@ -33,12 +33,10 @@ export function useMethods(abi: string) {
       const writes: string[] = [];
 
       for (const row of JSON.parse(abi)) {
-        if (row.type === 'function') {
-          if (row.stateMutability === 'view' && row.name) {
+        if (row.type === 'function' && row.name) {
+          if (row.stateMutability === 'view') {
             reads.push(row);
-          }
-
-          if (row.stateMutability === 'nonpayable' && row.name) {
+          } else {
             writes.push(row);
           }
         }
