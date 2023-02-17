@@ -1,16 +1,10 @@
 import { useEffect, useState } from 'react';
 import { useRouter } from 'next/router';
 import { useEthers } from '@usedapp/core';
-import Grid from '@mui/material/Grid';
 import Card from '@mui/material/Card';
-import CardHeader from '@mui/material/CardHeader';
 import CardContent from '@mui/material/CardContent';
 import Stack from '@mui/material/Stack';
 import Button from '@mui/material/Button';
-
-import MethodList from '@/views/dapp/MethodList';
-import IfacList from '@/views/dapp/IfacList';
-import ResultPannel from '@/views/dapp/ExecResult';
 
 import { useMethods, useDapp } from '@/hooks/dapp';
 import { MethodItem } from '@/views/dapp/MethadItem';
@@ -21,30 +15,16 @@ export default function Dapp() {
   const dapp = useDapp(query.address as string);
   const { reads, writes } = useMethods(dapp?.abi);
 
-  const [methodIfacs, setMethodIfacs] = useState<any[]>([]); // 可能存在同名方法
-  const [execResult, setExecResult] = useState<{ ifac: any; ret: any }>({
-    ifac: null,
-    ret: null,
-  }); // 调用结果
-
   const [tab, setTab] = useState<'read' | 'write'>('read');
 
   useEffect(() => {
     if (chainId && dapp?.chainId && chainId !== dapp.chainId) {
       switchNetwork(dapp?.chainId);
     }
-  }, [dapp?.chainId, chainId]);
-
-  const onClickMethod = (method: string) => {
-    const abi = JSON.parse(dapp?.abi);
-
-    const interfaces = abi.filter((i: any) => i.type === 'function' && i.name === method);
-
-    setMethodIfacs(interfaces);
-  };
+  }, [dapp?.chainId, chainId, switchNetwork]);
 
   return (
-    <Card>
+    <Card variant="outlined">
       <CardContent>
         <Stack direction="row" spacing={2} sx={{ mb: 2 }}>
           <Button variant={tab === 'read' ? 'contained' : 'outlined'} onClick={() => setTab('read')}>

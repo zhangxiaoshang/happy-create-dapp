@@ -12,13 +12,13 @@ import CardContent from '@mui/material/CardContent';
 import { utils } from 'ethers';
 import { shortenIfAddress } from '@usedapp/core';
 
-import { addDapp, getDapp, IDapp } from '@/database/dapp';
+import { addDapp, IDapp } from '@/database/dapp';
 import { networks } from '@/pages/_app';
 
 export default function Create() {
   const route = useRouter();
   const [dapp, setDapp] = useState<IDapp>({
-    chainId: 1,
+    chainId: 31337,
     chainName: '',
     name: '',
     address: '',
