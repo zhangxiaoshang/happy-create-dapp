@@ -35,9 +35,9 @@ export default function Dashboard() {
     e.stopPropagation();
     route.push({ pathname: '/dapp', query: { address } });
   };
-  const handleDelete = async (e: React.MouseEvent, address: string) => {
+  const handleDelete = async (e: React.MouseEvent, id: string) => {
     e.stopPropagation();
-    await deleteDapp(address);
+    await deleteDapp(id);
     await queryDapps();
   };
 
@@ -70,7 +70,7 @@ export default function Dashboard() {
                 onClick={() =>
                   route.push({
                     pathname: '/dapp',
-                    query: { address: row.address },
+                    query: { address: row.address, chainId: row.chainId },
                   })
                 }
               >
@@ -86,7 +86,7 @@ export default function Dashboard() {
                     <Button size="small" variant="contained" endIcon={<SendIcon />} onClick={(e) => handlePlay(e, row.address)}>
                       Play
                     </Button>
-                    <Button size="small" variant="outlined" startIcon={<DeleteIcon />} onClick={(e) => handleDelete(e, row.address)}>
+                    <Button size="small" variant="outlined" startIcon={<DeleteIcon />} onClick={(e) => handleDelete(e, row.id)}>
                       Delete
                     </Button>
                   </Stack>

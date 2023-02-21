@@ -1,22 +1,22 @@
 import { useEffect, useState } from 'react';
 import { getDapp } from '@/database/dapp';
 
-export function useDapp(address: string | undefined) {
+export function useDapp(chainId: number, address: string | undefined) {
   const [dapp, setDapp] = useState<any>();
 
   useEffect(() => {
     if (!address) return;
 
     (async () => {
-      const _dapp = await getDapp(address);
+      const _dapp = await getDapp(chainId, address);
       setDapp(_dapp);
     })();
-  }, [address]);
+  }, [chainId, address]);
 
   return dapp;
 }
 
-export function useMethods(abi: string) {
+export function useMethods(abi: any[]) {
   const [methods, setMethods] = useState<{ reads: any[]; writes: any[] }>({
     reads: [],
     writes: [],
@@ -27,12 +27,12 @@ export function useMethods(abi: string) {
     parseABI(abi);
   }, [abi]);
 
-  const parseABI = (abi: string) => {
+  const parseABI = (abi: any[]) => {
     try {
       const reads: string[] = [];
       const writes: string[] = [];
 
-      for (const row of JSON.parse(abi)) {
+      for (const row of abi) {
         if (row.type === 'function' && row.name) {
           if (row.stateMutability === 'view') {
             reads.push(row);

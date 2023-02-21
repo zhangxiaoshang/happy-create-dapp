@@ -19,11 +19,12 @@ import { networks } from '@/pages/_app';
 export default function Create() {
   const route = useRouter();
   const [dapp, setDapp] = useState<IDapp>({
+    id: '',
     chainId: 31337,
     chainName: '',
     name: '',
     address: '',
-    abi: '',
+    abi: [],
     description: '',
   });
 
@@ -36,10 +37,28 @@ export default function Create() {
     setDapp({ ...dapp, chainId, chainName: chain?.chainName ?? shortenIfAddress(dapp.address) });
   };
 
+  const handleABIChanged = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {
+    try {
+      const str = e.target.value;
+      const _json = JSON.parse(str);
+
+      const abi: any[] = _json.abi || _json;
+      const name = _json?.contractName;
+
+      console.log({ name });
+      setDapp({ ...dapp, abi, name });
+
+      if (_json.contractName) {
+      }
+    } catch (err) {
+      console.error(err);
+    }
+  };
+
   const handleCreate = async () => {
     await addDapp(dapp);
 
-    route.push({ pathname: '/dapp', query: { address: dapp.address } });
+    route.push({ pathname: '/dapp', query: { chainId: dapp.chainId, address: dapp.address } });
   };
 
   return (
@@ -51,9 +70,10 @@ export default function Create() {
         <Stack spacing={2}>
           <FormControl fullWidth required>
             <InputLabel>Chain</InputLabel>
-            <Select defaultValue={dapp.chainId} label="Chain" onChange={handleNetworkChanged}>
+            <Select value={dapp.chainId} label="Chain" onChange={handleNetworkChanged}>
               {networks.map((network) => (
                 <MenuItem key={network.chainId} value={network.chainId}>
+                  {(network.chainId === 56 || network.chainId === 97) && 'BSC '}
                   {network.chainName}
                 </MenuItem>
               ))}
@@ -64,14 +84,15 @@ export default function Create() {
             label="Contract Address"
             variant="outlined"
             required
+            value={dapp.address}
             onChange={(e) => setDapp({ ...dapp, address: e.target.value })}
             error={addressError}
             helperText={addressError ? 'validAddress' : ''}
           />
 
-          <TextField required label="ABI" variant="outlined" onChange={(e) => setDapp({ ...dapp, abi: e.target.value })} />
+          <TextField required label="ABI or Artiface" variant="outlined" onChange={handleABIChanged} />
 
-          <TextField label="Name" variant="outlined" onChange={(e) => setDapp({ ...dapp, name: e.target.value })} />
+          <TextField label="Name" variant="outlined" value={dapp.name} onChange={(e) => setDapp({ ...dapp, name: e.target.value })} />
           <TextField label="Description" variant="outlined" onChange={(e) => setDapp({ ...dapp, description: e.target.value })} />
 
           <Button variant="contained" onClick={handleCreate}>

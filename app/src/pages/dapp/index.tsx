@@ -14,18 +14,13 @@ import { MethodItem } from '@/views/dapp/MethadItem';
 export default function Dapp() {
   const { account, library, chainId, switchNetwork, activateBrowserWallet } = useEthers();
   const { query } = useRouter();
-  const dapp = useDapp(query.address as string);
+
+  const dapp = useDapp(Number(query.chainId), String(query.address));
   const { reads, writes } = useMethods(dapp?.abi);
 
   const [tab, setTab] = useState<'read' | 'write'>('read');
 
   const netwrokError = !!chainId && !!dapp?.chainId && chainId !== dapp.chainId;
-
-  // useEffect(() => {
-  //   if (chainId && dapp?.chainId && chainId !== dapp.chainId) {
-  //     switchNetwork(dapp?.chainId);
-  //   }
-  // }, [dapp?.chainId, chainId, switchNetwork]);
 
   return (
     <>
