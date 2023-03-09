@@ -33,13 +33,28 @@ interface OverridesProps {
 
 export function MethodItem(props: MethodItemProps) {
   const { disabled, index, type, name, ifac, address, library, signAccount } = props;
-  const [args, setArgs] = useState<(string | number)[]>([]);
+  const [args, setArgs] = useState<(string | number | string[] | number[])[]>([]);
   const [overrides, setOverrides] = useState<OverridesProps>({});
   const [result, setResult] = useState<any>(); // call method result
 
-  const changeArgs = (index: number, val: string | number) => {
+  const changeArgs = (index: number, val: string | number, internalType: string) => {
     const copyArgs = [...args];
-    copyArgs.splice(index, 1, val);
+
+    // address[]
+    // 将输入的字符串转换为数组
+    // 0x123,0x456 => ["0x123","0x456"]
+    const arrayReg = /[0-9a-z]+\[\]/gi;
+    if (arrayReg.test(internalType)) {
+      const valStr = String(val).replaceAll(' ', '');
+      if (valStr) {
+        const addrs = valStr.split(',');
+        copyArgs.splice(index, 1, addrs);
+      } else {
+        copyArgs.splice(index, 1, []);
+      }
+    } else {
+      copyArgs.splice(index, 1, val);
+    }
 
     setArgs(copyArgs);
   };
