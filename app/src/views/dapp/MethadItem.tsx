@@ -31,13 +31,15 @@ interface OverridesProps {
   blockTag?: string;
 }
 
+export type ChangeArgFn = (index: number, val: string | number, internalType: string) => void;
+
 export function MethodItem(props: MethodItemProps) {
   const { disabled, index, type, name, ifac, address, library, signAccount } = props;
   const [args, setArgs] = useState<(string | number | string[] | number[])[]>([]);
   const [overrides, setOverrides] = useState<OverridesProps>({});
   const [result, setResult] = useState<any>(); // call method result
 
-  const changeArgs = (index: number, val: string | number, internalType: string) => {
+  const changeArgs: ChangeArgFn = (index: number, val: string | number, internalType: string) => {
     const copyArgs = [...args];
 
     // address[]
@@ -71,6 +73,7 @@ export function MethodItem(props: MethodItemProps) {
         return console.log('invalid library:', library);
       }
 
+      console.log('args', args);
       const signerOrLibrary = signAccount ? library?.getSigner(signAccount).connectUnchecked() : library;
       const contract = new Contract(address, [ifac], signerOrLibrary);
       const ret = await contract[ifac.name](...args, overrides);
