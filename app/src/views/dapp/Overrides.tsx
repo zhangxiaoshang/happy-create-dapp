@@ -8,7 +8,9 @@ import ExpandMoreIcon from '@mui/icons-material/ExpandMore';
 import Stack from '@mui/material/Stack';
 import TextField from '@mui/material/TextField';
 
-interface OverridesProps {
+import { NumberInput } from './NumberInput';
+
+interface Overrides {
   value?: string;
   from?: string;
   gasPrice?: string;
@@ -16,10 +18,15 @@ interface OverridesProps {
   blockTag?: string;
 }
 
-const Overrides: React.FunctionComponent<{ overrides: OverridesProps; setOverrides: Dispatch<SetStateAction<OverridesProps>> }> = ({
-  overrides,
-  setOverrides,
-}) => {
+interface OverridesProps {
+  ifac: any;
+  overrides: Overrides;
+  setOverrides: Dispatch<SetStateAction<Overrides>>;
+}
+
+const Overrides: React.FunctionComponent<OverridesProps> = ({ ifac, overrides, setOverrides }) => {
+  const isPayable = ifac.stateMutability === 'payable';
+
   return (
     <Accordion sx={{ mt: 2 }} variant="outlined">
       <AccordionSummary expandIcon={<ExpandMoreIcon />}>
@@ -28,10 +35,37 @@ const Overrides: React.FunctionComponent<{ overrides: OverridesProps; setOverrid
 
       <AccordionDetails>
         <Stack direction="row" spacing={2}>
-          <TextField size="small" label="value" variant="outlined" onChange={(e) => setOverrides({ ...overrides, value: e.target.value })} />
+          {isPayable && (
+            <NumberInput
+              size="small"
+              variant="outlined"
+              label="value"
+              sx={{ minWidth: '420px' }}
+              callback={(value) => {
+                setOverrides({ ...overrides, value });
+              }}
+            ></NumberInput>
+          )}
+
           <TextField size="small" label="from" variant="outlined" onChange={(e) => setOverrides({ ...overrides, from: e.target.value })} />
-          <TextField size="small" label="gasPrice" variant="outlined" onChange={(e) => setOverrides({ ...overrides, gasPrice: e.target.value })} />
-          <TextField size="small" label="gasLimit" variant="outlined" onChange={(e) => setOverrides({ ...overrides, gasLimit: e.target.value })} />
+          <NumberInput
+            size="small"
+            variant="outlined"
+            label="gasPrice"
+            sx={{ minWidth: '280px' }}
+            callback={(value) => {
+              setOverrides({ ...overrides, gasPrice: value });
+            }}
+          ></NumberInput>
+          <NumberInput
+            size="small"
+            variant="outlined"
+            label="gasLimit"
+            sx={{ minWidth: '280px' }}
+            callback={(value) => {
+              setOverrides({ ...overrides, gasLimit: value });
+            }}
+          ></NumberInput>
           <TextField size="small" label="blockTag" variant="outlined" onChange={(e) => setOverrides({ ...overrides, blockTag: e.target.value })} />
         </Stack>
       </AccordionDetails>

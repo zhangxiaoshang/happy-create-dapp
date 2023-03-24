@@ -8,9 +8,13 @@ import Typography from '@mui/material/Typography';
 import ExpandMoreIcon from '@mui/icons-material/ExpandMore';
 import Button from '@mui/material/Button';
 
-import ArgsContent from './ArgsContent';
+import MethodArgs from './MethodArgs';
 import Overrides from './Overrides';
 import OutputList from './OutputList';
+
+import { TabName } from '@/constants';
+
+import { Output } from './Output';
 
 interface MethodItemProps {
   disabled?: boolean;
@@ -33,11 +37,14 @@ interface OverridesProps {
 
 export type ChangeArgFn = (index: number, val: string | number, internalType: string) => void;
 
-export function MethodItem(props: MethodItemProps) {
+export function OneMethod(props: MethodItemProps) {
   const { disabled, index, type, name, ifac, address, library, signAccount } = props;
   const [args, setArgs] = useState<(string | number | string[] | number[])[]>([]);
   const [overrides, setOverrides] = useState<OverridesProps>({});
   const [result, setResult] = useState<any>(); // call method result
+
+  const isRead = type === TabName.read;
+  const isWrite = type === TabName.write;
 
   const changeArgs: ChangeArgFn = (index: number, val: string | number, internalType: string) => {
     const copyArgs = [...args];
@@ -85,30 +92,32 @@ export function MethodItem(props: MethodItemProps) {
     }
   };
 
+  const methodName = (
+    <AccordionSummary expandIcon={<ExpandMoreIcon />}>
+      <Typography>
+        {index + 1}. {name}
+      </Typography>
+    </AccordionSummary>
+  );
+
   return (
     <Accordion onChange={handleChange} variant="outlined" disabled={disabled}>
-      <AccordionSummary expandIcon={<ExpandMoreIcon />} aria-controls="panel1a-content">
-        <Typography>
-          {index + 1}. {name}
-        </Typography>
-      </AccordionSummary>
+      {methodName}
 
       <AccordionDetails>
-        <ArgsContent inputs={ifac.inputs} onChange={changeArgs}></ArgsContent>
+        <MethodArgs inputs={ifac.inputs} onChange={changeArgs}></MethodArgs>
+
         {/* only write method has overrides */}
-        {type === 'write' && <Overrides overrides={overrides} setOverrides={setOverrides}></Overrides>}
+        {isWrite && <Overrides ifac={ifac} overrides={overrides} setOverrides={setOverrides}></Overrides>}
 
         {/* inputs.length > 1 need query button, otherwise auto query */}
         {!!ifac.inputs.length && (
           <Button size="small" variant="outlined" sx={{ width: '100px', mt: 2 }} onClick={handleQuery}>
-            {type === 'read' ? 'Query' : 'Write'}
+            {isRead ? 'Query' : 'Write'}
           </Button>
         )}
 
-        {/* read output */}
-        {type === 'read' && <OutputList outputs={ifac.outputs} result={result}></OutputList>}
-        {/* write output */}
-        {type === 'write' && <pre style={{ whiteSpace: 'pre-wrap', overflow: 'auto' }}>{JSON.stringify(result, null, 2)}</pre>}
+        <Output isRead={isRead} isWrite={isWrite} ifac={ifac} result={result}></Output>
       </AccordionDetails>
     </Accordion>
   );

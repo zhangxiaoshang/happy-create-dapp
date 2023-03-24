@@ -1,8 +1,8 @@
 import { useEffect, useState } from 'react';
-import { getDapp } from '@/database/dapp';
+import { getDapp, IDapp } from '@/database/dapp';
 
 export function useDapp(chainId: number, address: string | undefined) {
-  const [dapp, setDapp] = useState<any>();
+  const [dapp, setDapp] = useState<IDapp>();
 
   useEffect(() => {
     if (!address) return;
@@ -16,7 +16,7 @@ export function useDapp(chainId: number, address: string | undefined) {
   return dapp;
 }
 
-export function useMethods(abi: any[]) {
+export function useMethods(abi?: any[]) {
   const [methods, setMethods] = useState<{ reads: any[]; writes: any[] }>({
     reads: [],
     writes: [],

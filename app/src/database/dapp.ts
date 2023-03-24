@@ -53,7 +53,7 @@ export async function deleteDapp(id: string) {
   return await db.delete(DAPP_STORE, id);
 }
 
-export async function getDapp(chainId: number, address: string) {
+export async function getDapp(chainId: number, address: string): Promise<IDapp> {
   const db = await doDatabaseStuff();
   const dapp = await db.get(DAPP_STORE, getKeyPath(chainId, address));
 

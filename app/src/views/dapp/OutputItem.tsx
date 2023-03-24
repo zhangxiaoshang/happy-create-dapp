@@ -13,7 +13,7 @@ import Stack from '@mui/material/Stack';
 import TextField from '@mui/material/TextField';
 import Button from '@mui/material/Button';
 
-import ArgsContent from './ArgsContent';
+import MethodArgs from './MethodArgs';
 import Overrides from './Overrides';
 
 interface OutputItemProps {
