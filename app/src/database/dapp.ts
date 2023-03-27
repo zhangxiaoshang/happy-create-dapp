@@ -1,4 +1,5 @@
 import { openDB } from 'idb';
+import TetherUSDABI from '@/abis/TetherUSD.json';
 
 const DAPP_DB = 'Dapps';
 const DAPP_STORE = 'dapps';
@@ -65,4 +66,24 @@ export async function getDapps() {
   const dapps = await db.getAll(DAPP_STORE);
 
   return dapps;
+}
+
+/**
+ * 设置初始dapp USDT on Mainnet
+ */
+export async function initDefaultDapp() {
+  const dapps = await getDapps();
+  if (dapps.length) return;
+
+  const usdtDapp = {
+    id: '',
+    chainId: 1,
+    chainName: 'Mainnet',
+    name: 'Tether USD (USDT)',
+    address: '0xdAC17F958D2ee523a2206206994597C13D831ec7',
+    abi: TetherUSDABI,
+    description: 'A DApp example',
+  };
+
+  await addDapp(usdtDapp);
 }

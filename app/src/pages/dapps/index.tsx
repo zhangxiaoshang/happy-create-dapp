@@ -16,14 +16,18 @@ import Stack from '@mui/material/Stack';
 
 import dayjs from 'dayjs';
 
-import { getDapps, deleteDapp } from '@/database/dapp';
+import { initDefaultDapp, getDapps, deleteDapp } from '@/database/dapp';
 
 export default function Dashboard() {
   const route = useRouter();
   const [dapps, setDapps] = useState<any[]>([]);
 
   useEffect(() => {
-    queryDapps();
+    (async () => {
+      await initDefaultDapp();
+
+      queryDapps();
+    })();
   }, []);
 
   const queryDapps = async () => {
@@ -31,9 +35,9 @@ export default function Dashboard() {
     setDapps(_dapps);
   };
 
-  const handlePlay = (e: React.MouseEvent, address: string) => {
+  const handlePlay = (e: React.MouseEvent, address: string, chainId: string) => {
     e.stopPropagation();
-    route.push({ pathname: '/dapp', query: { address } });
+    route.push({ pathname: '/dapp', query: { address, chainId } });
   };
   const handleDelete = async (e: React.MouseEvent, id: string) => {
     e.stopPropagation();
@@ -83,7 +87,7 @@ export default function Dashboard() {
                 <TableCell>{row.updateAt ? dayjs(row.updateAt).format('YYYY-MM-DD HH:mm') : ''}</TableCell>
                 <TableCell align="right">
                   <Stack direction="row" spacing={2} justifyContent="flex-end">
-                    <Button size="small" variant="contained" endIcon={<SendIcon />} onClick={(e) => handlePlay(e, row.address)}>
+                    <Button size="small" variant="contained" endIcon={<SendIcon />} onClick={(e) => handlePlay(e, row.address, row.chainId)}>
                       Play
                     </Button>
                     <Button size="small" variant="outlined" startIcon={<DeleteIcon />} onClick={(e) => handleDelete(e, row.id)}>

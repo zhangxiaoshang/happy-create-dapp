@@ -1,5 +1,6 @@
 import { useEffect, useState } from 'react';
 import { getDapp, IDapp } from '@/database/dapp';
+import { Abi, AbiFunction } from 'abitype';
 
 export function useDapp(chainId: number, address: string | undefined) {
   const [dapp, setDapp] = useState<IDapp>();
@@ -16,8 +17,8 @@ export function useDapp(chainId: number, address: string | undefined) {
   return dapp;
 }
 
-export function useMethods(abi?: any[]) {
-  const [methods, setMethods] = useState<{ reads: any[]; writes: any[] }>({
+export function useMethods(abi?: Abi) {
+  const [methods, setMethods] = useState<{ reads: AbiFunction[]; writes: AbiFunction[] }>({
     reads: [],
     writes: [],
   });
@@ -27,10 +28,10 @@ export function useMethods(abi?: any[]) {
     parseABI(abi);
   }, [abi]);
 
-  const parseABI = (abi: any[]) => {
+  const parseABI = (abi: Abi) => {
     try {
-      const reads: string[] = [];
-      const writes: string[] = [];
+      const reads: AbiFunction[] = [];
+      const writes: AbiFunction[] = [];
 
       for (const row of abi) {
         if (row.type === 'function' && row.name) {

@@ -1,15 +1,15 @@
 import { useState } from 'react';
+import { BaseTextFieldProps } from '@mui/material';
+import Autocomplete from '@mui/material/Autocomplete';
 import TextField from '@mui/material/TextField';
-import { ChangeArgFn } from './OneMethod';
 import { utils } from 'ethers';
 import { units } from '@/constants';
-import { NumberInput } from './NumberInput';
+import { OnArgsChangeFn } from './index';
 
-interface ArgItemProps {
-  index: number;
-  name: string | undefined;
-  internalType: string;
-  onChange: ChangeArgFn;
+interface InputNumberProps {
+  label: string;
+  placeholder?: string;
+  onArgChange: (val: string) => void;
 }
 
 interface AutocompleteOption {
@@ -18,22 +18,6 @@ interface AutocompleteOption {
   value: string;
   label: string;
 }
-
-const getInputPlaceholder = (type: string) => {
-  const arrayReg = /[0-9a-z]+\[\]/gi; // 数组类型参数：address[]、uint256[]、int128[]...
-  const isArrayType = arrayReg.test(type);
-
-  let text: string | undefined;
-  if (isArrayType) {
-    if (type === 'address[]') {
-      text = 'e.g: 0x123,0x456';
-    } else {
-      text = 'e.g: 123,456';
-    }
-  }
-
-  return text;
-};
 
 // 获取小数位数
 const getNumberDecimals = (num: string | number) => {
@@ -50,22 +34,11 @@ const getNumberDecimals = (num: string | number) => {
  * @param props
  * @returns
  */
-export function MethodArgItem(props: ArgItemProps) {
-  const { index, name, internalType, onChange } = props;
+export function InputNumber(props: BaseTextFieldProps & InputNumberProps) {
+  const { label, placeholder, onArgChange } = props;
   const [options, setOptions] = useState<AutocompleteOption[]>([]); // number 类型自动完成转化
 
-  const isNumberType = /[u]?int\d+$/.test(internalType); // uint256|int128...
-
   const handleAutoInputChange: React.ChangeEventHandler<HTMLTextAreaElement | HTMLInputElement> = (e) => {
-    if (!isNumberType) {
-      // 非数字参数直接回调
-      onChange(index, e.target.value, internalType);
-
-      return;
-    }
-
-    // 数字类型支持自动转换
-
     const value = Number(e.target.value);
     let newOptions: AutocompleteOption[] = [];
 
@@ -99,25 +72,19 @@ export function MethodArgItem(props: ArgItemProps) {
     setOptions(newOptions); // 将数据作为选项提供给用户选择
   };
 
-  return isNumberType ? (
-    <NumberInput
-      size="small"
-      sx={{ minWidth: '420px' }}
-      variant="outlined"
-      label={name ? `${name} (${internalType})` : `<input> (${internalType})`}
-      placeholder={getInputPlaceholder(internalType)}
-      callback={(val) => {
-        onChange(index, val, internalType);
+  return (
+    <Autocomplete
+      size={props.size}
+      filterOptions={() => options}
+      options={options}
+      autoHighlight
+      getOptionLabel={(option) => `${option.value} ${option.unit}(${option.decimals})`}
+      onChange={(event: any, newValue: AutocompleteOption | null) => {
+        onArgChange(newValue ? newValue.value : '');
       }}
-    ></NumberInput>
-  ) : (
-    <TextField
-      size="small"
-      sx={{ minWidth: '420px' }}
-      label={name ? `${name} (${internalType})` : `<input> (${internalType})`}
-      variant="outlined"
-      placeholder={getInputPlaceholder(internalType)}
-      onChange={(e) => onChange(index, e.target.value, internalType)}
+      renderInput={(params) => (
+        <TextField sx={props.sx} variant={props.variant} {...params} label={label} placeholder={placeholder} onChange={handleAutoInputChange} />
+      )}
     />
   );
 }

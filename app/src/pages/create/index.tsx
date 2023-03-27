@@ -21,7 +21,7 @@ export default function Create() {
   const [dapp, setDapp] = useState<IDapp>({
     id: '',
     chainId: 31337,
-    chainName: '',
+    chainName: 'Hardhat',
     name: '',
     address: '',
     abi: [],
@@ -45,11 +45,7 @@ export default function Create() {
       const abi: any[] = _json.abi || _json;
       const name = _json?.contractName;
 
-      console.log({ name });
       setDapp({ ...dapp, abi, name });
-
-      if (_json.contractName) {
-      }
     } catch (err) {
       console.error(err);
     }
