@@ -19,13 +19,15 @@ export function CallFunction(props: ReadFunctionProps) {
   const { chainId, address, args, abiFunc } = props;
   const { readOnlyUrls } = useConfig();
 
-  const [callValue, setCallValue] = useState<any>(); // call成功 https://docs.ethers.org/v5/api/contract/contract/#Contract-functionsCall
+  const [callValue, setCallValue] = useState<any>(null); // call成功 https://docs.ethers.org/v5/api/contract/contract/#Contract-functionsCall
   const [callException, setCallException] = useState<Error>(); // call失败 https://docs.ethers.org/v5/api/contract/contract/#Contract-functionsCall
 
   const [loading, setLoading] = useState(false);
 
   const handleQuery = async () => {
     setLoading(true);
+    setCallValue(null);
+    setCallException(undefined);
 
     try {
       if (!readOnlyUrls) return;
@@ -88,7 +90,7 @@ export function CallFunction(props: ReadFunctionProps) {
       )}
 
       {/* output */}
-      {!!callValue && <CallValue parameter={abiFunc.outputs} value={callValue}></CallValue>}
+      {callValue !== null && <CallValue parameter={abiFunc.outputs} value={callValue}></CallValue>}
 
       {!!callException && <CallException error={callException}></CallException>}
     </>
