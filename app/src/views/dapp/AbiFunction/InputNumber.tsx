@@ -42,9 +42,9 @@ export function InputNumber(props: BaseTextFieldProps & InputNumberProps) {
     const value = Number(e.target.value);
     let newOptions: AutocompleteOption[] = [];
 
-    if (value) {
-      newOptions = [];
-
+    if (value === 0) {
+      newOptions = [{ unit: 'wei', decimals: 0, value: '0', label: '0' }];
+    } else if (value) {
       units.forEach((u) => {
         // wei 不用转换
         if (u.decimals === 0) {
@@ -78,7 +78,7 @@ export function InputNumber(props: BaseTextFieldProps & InputNumberProps) {
       filterOptions={() => options}
       options={options}
       autoHighlight
-      getOptionLabel={(option) => `${option.value} ${option.unit}(${option.decimals})`}
+      getOptionLabel={(option) => (option.decimals === 0 ? option.value : `${option.value} ${option.unit}(${option.decimals})`)}
       onChange={(event: any, newValue: AutocompleteOption | null) => {
         onArgChange(newValue ? newValue.value : '');
       }}
