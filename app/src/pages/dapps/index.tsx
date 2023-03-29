@@ -14,14 +14,47 @@ import DeleteIcon from '@mui/icons-material/Delete';
 import SendIcon from '@mui/icons-material/Send';
 import CodeIcon from '@mui/icons-material/Code';
 import Stack from '@mui/material/Stack';
+import CheckCircleOutlineIcon from '@mui/icons-material/CheckCircleOutline';
+import ContentCopyIcon from '@mui/icons-material/ContentCopy';
 
 import dayjs from 'dayjs';
 
-import { initDefaultDapp, getDapps, deleteDapp } from '@/database/dapp';
+import { CopyToClipboard } from 'react-copy-to-clipboard';
+
+import { initDefaultDapp, getDapps, deleteDapp, IDapp } from '@/database/dapp';
+import { shortenIfAddress } from '@usedapp/core';
+
+function CopyButton({ label, text }: { label: string; text: string }) {
+  const [copied, setCopied] = useState(false);
+
+  return (
+    <CopyToClipboard
+      text={text}
+      onCopy={() => {
+        setCopied(true);
+
+        setTimeout(() => {
+          setCopied(false);
+        }, 1000);
+      }}
+    >
+      <Button
+        onClick={(e) => e.stopPropagation()}
+        size="small"
+        variant="outlined"
+        endIcon={copied ? <CheckCircleOutlineIcon color="success" /> : <ContentCopyIcon />}
+      >
+        {label}
+      </Button>
+    </CopyToClipboard>
+  );
+}
 
 export default function Dashboard() {
   const route = useRouter();
-  const [dapps, setDapps] = useState<any[]>([]);
+  const [dapps, setDapps] = useState<IDapp[]>([]);
+
+  const [copied, setCopied] = useState(false);
 
   useEffect(() => {
     (async () => {
@@ -85,21 +118,30 @@ export default function Dashboard() {
                   })
                 }
               >
-                <TableCell>{row.name || row.address}</TableCell>
+                <TableCell>{row.name || shortenIfAddress(row.address)}</TableCell>
                 <TableCell>{row.chainId}</TableCell>
                 <TableCell>{row.chainName}</TableCell>
-                <TableCell>{row.address}</TableCell>
+                <TableCell>{shortenIfAddress(row.address)}</TableCell>
                 <TableCell>{row.description}</TableCell>
                 <TableCell>{row.createAt ? dayjs(row.createAt).format('YYYY-MM-DD HH:mm') : ''}</TableCell>
                 <TableCell>{row.updateAt ? dayjs(row.updateAt).format('YYYY-MM-DD HH:mm') : ''}</TableCell>
                 <TableCell align="right">
                   <Stack direction="row" spacing={2} justifyContent="flex-end">
-                    <Button size="small" variant="contained" endIcon={<SendIcon />} onClick={(e) => handlePlay(e, row.address, row.chainId)}>
+                    <Button size="small" variant="contained" endIcon={<SendIcon />} onClick={(e) => handlePlay(e, row.address, String(row.chainId))}>
                       Play
                     </Button>
-                    <Button size="small" color="secondary" variant="contained" endIcon={<CodeIcon />} onClick={(e) => viewHooks(e, row.address, row.chainId)}>
+                    <Button
+                      size="small"
+                      color="secondary"
+                      variant="contained"
+                      endIcon={<CodeIcon />}
+                      onClick={(e) => viewHooks(e, row.address, String(row.chainId))}
+                    >
                       Hooks
                     </Button>
+
+                    <CopyButton label="Copy ABI" text={JSON.stringify(row.abi)}></CopyButton>
+
                     <Button size="small" variant="outlined" startIcon={<DeleteIcon />} onClick={(e) => handleDelete(e, row.id)}>
                       Delete
                     </Button>

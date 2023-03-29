@@ -12,5 +12,5 @@ export function generateReturnTypes(outputs: readonly AbiParameter[]): string {
   if (tsTypes.length === 1) return `: ${tsTypes.join('')}`;
 
   // output > 1
-  return `[${tsTypes.join(', ')}]`;
+  return `: [${tsTypes.join(', ')}]`;
 }
