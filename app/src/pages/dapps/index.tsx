@@ -12,6 +12,7 @@ import Paper from '@mui/material/Paper';
 import Button from '@mui/material/Button';
 import DeleteIcon from '@mui/icons-material/Delete';
 import SendIcon from '@mui/icons-material/Send';
+import CodeIcon from '@mui/icons-material/Code';
 import Stack from '@mui/material/Stack';
 
 import dayjs from 'dayjs';
@@ -39,6 +40,12 @@ export default function Dashboard() {
     e.stopPropagation();
     route.push({ pathname: '/dapp', query: { address, chainId } });
   };
+
+  const viewHooks = (e: React.MouseEvent, address: string, chainId: string) => {
+    e.stopPropagation();
+    route.push({ pathname: '/hooks', query: { address, chainId } });
+  };
+
   const handleDelete = async (e: React.MouseEvent, id: string) => {
     e.stopPropagation();
     await deleteDapp(id);
@@ -89,6 +96,9 @@ export default function Dashboard() {
                   <Stack direction="row" spacing={2} justifyContent="flex-end">
                     <Button size="small" variant="contained" endIcon={<SendIcon />} onClick={(e) => handlePlay(e, row.address, row.chainId)}>
                       Play
+                    </Button>
+                    <Button size="small" color="secondary" variant="contained" endIcon={<CodeIcon />} onClick={(e) => viewHooks(e, row.address, row.chainId)}>
+                      Hooks
                     </Button>
                     <Button size="small" variant="outlined" startIcon={<DeleteIcon />} onClick={(e) => handleDelete(e, row.id)}>
                       Delete
